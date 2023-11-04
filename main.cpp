@@ -47,6 +47,7 @@ int main() {
                         // Clicked on the slider, enable dragging
                         bool isDragging = true;
 
+
                         while(isDragging) {
                             sf::Event dragEvent;
                                 while (window.pollEvent(dragEvent)) {
