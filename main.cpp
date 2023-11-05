@@ -8,6 +8,7 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(w, l), "Anchor", sf::Style::Titlebar | sf::Style::Close, sf::ContextSettings(0, 0, 8));
     window.clear(sf::Color::Black);
     window.setFramerateLimit(60);
+    sf::Clock clock;
 
     // Create field vars
     float x, y;
@@ -29,11 +30,8 @@ int main() {
     slider1.setFillColor(sf::Color(200, 200, 200));
     slider1.setPosition(50, 50);
     
-    // Create a sample circle
-    sf::CircleShape circle(5);  // Radius of the circle is 50 pixels
-    circle.setFillColor(sf::Color(66, 135, 245));  // Color of the circle is green
-    sf::Vector2f circlePosition(w/2, l/2);  // Initial position of the circle
-
+    // Create a the circles
+    Point_Cloud points(1, {w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, &window);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -46,7 +44,6 @@ int main() {
                     if (slider1.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
                         // Clicked on the slider, enable dragging
                         bool isDragging = true;
-
 
                         while(isDragging) {
                             sf::Event dragEvent;
@@ -73,6 +70,7 @@ int main() {
                                     // std::cout << "Current Value: " << value << std::endl;
                                 }
                             }
+
                             window.clear(sf::Color::Black);
                             window.draw(scrollbar1);
                             window.draw(slider1);
@@ -84,7 +82,7 @@ int main() {
             } 
 
             // Check for keyboard input to move the circle
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            /*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
                 circlePosition.x -= 5; // Move left
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
@@ -95,23 +93,29 @@ int main() {
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
                 circlePosition.y += 5; // Move down
-            }
+            }*/
         }
+
+        sf::Time deltaTime = clock.restart();
+        float deltaTimeSeconds = deltaTime.asSeconds(); 
 
         // Clear the window
         window.clear(sf::Color::Black);
 
-        circle.setPosition(circlePosition);
-        
-        window.draw(circle);
+        // Field 
         window.draw(field);
-        
+
+        // Draw circles
+        points.Draw({w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, deltaTimeSeconds);
+
+        // Scrollbar 
         window.draw(scrollbar1);
         window.draw(slider1);
 
         // Display the content
         window.display();
     }
- 
+
+    points.~Point_Cloud();
     return 0;
 }
