@@ -64,7 +64,6 @@ float Point_Cloud::CalculateDensity(sf::Vector2f samplePoint) {
 
     return density;
 }
-
 float Point_Cloud::ConvertDensityToPressure(float density) {
     float densityError = density - targetDensity;
     float pressure = densityError * pressureMultiplier;
