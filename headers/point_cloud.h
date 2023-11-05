@@ -8,7 +8,8 @@
 #include <cstdlib> 
 #include <cmath> 
 #include <ctime> 
-#include "Point.h"
+#include <omp.h>
+// #include "Point.h"
 
 using namespace std;
 
@@ -16,39 +17,37 @@ class Point_Cloud {
 public:
     Point_Cloud(int numb_of_points, sf::Vector2f b1, sf::Vector2f b2, sf::RenderWindow *window);
     ~Point_Cloud();
-    void Draw(sf::Vector2f b1, sf::Vector2f b2, float deltaTime); // Args are the boundaries
+    void SimulateStep(sf::Vector2f b1, sf::Vector2f b2, float deltaTime);
 
 private:
+    // Gravity
+    int size = 5; 
+    float gravity           = 1.4f;
+    float mass              = 1.6f;
+    float collisionDamping  = 0.6f;
+
+    // Pressure
     int numb_of_points;
-    float smoothingRadius = 1.f;
-    float targetDensity;
-    float pressureMultiplier;
+    float smoothingRadius = 45.35f; // 45.35f
+    float targetDensity = 1.2f;
+    float pressureMultiplier = -600.44f;
+    
+    // Arrays 
+    float *densities;
+    sf::Vector2f *velocities;
+    sf::Vector2f *positions;
+    sf::Vector2f *predictedPositions;
+    sf::CircleShape *circles; 
 
     sf::RenderWindow *window;
     float SmoothingKernel(float dst, float r);
     float SmoothingKernelDerivative(float dst, float r);
     float CalculateDensity(sf::Vector2f samplePoint);
-    
+    float CalculateSharedPressure(float densityA, float densityB);
+
     float ConvertDensityToPressure(float density);
 
-    Point *points;
-    sf::CircleShape *circles; 
-
-    // sf::Vector2f CalculatePropertyGradient(sf::Vector2f samplePoint);
-    // float CalculateProperty(sf::Vector2f samplePoint);
+    sf::Vector2f CalculatePressureForce(int particleIndex);
 };
-
-float magnitude (sf::Vector2f v1, sf::Vector2f v2) {
-    return sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
-}
-
-float Pow(float base, int exp) {
-    int i;
-    float res = 1; 
-    for (i=0; i<exp; ++exp) {
-        res *= base;
-    }
-    return res;
-}
 
 #endif

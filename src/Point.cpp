@@ -3,12 +3,13 @@
 Point::Point(sf::Vector2f position, int size) {
     this->position = position;
     this->size = size;
+    velocity = sf::Vector2f(0, 0);
 }
 
-void Point::update(float deltaTime) {
-    velocity += sf::Vector2f(0, 1) * gravity * deltaTime;
-    position += velocity * deltaTime;
+void Point::addToVelocity(sf::Vector2f v) {
+    velocity += v;
 }
+
 
 void Point::resolveCollisions(sf::Vector2f b1, sf::Vector2f b2) {
     if (position.x+size*2 >= b2.x) 

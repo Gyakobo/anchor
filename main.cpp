@@ -7,7 +7,7 @@ int main() {
     const int w = 1280, l = 720; 
     sf::RenderWindow window(sf::VideoMode(w, l), "Anchor", sf::Style::Titlebar | sf::Style::Close, sf::ContextSettings(0, 0, 8));
     window.clear(sf::Color::Black);
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(120);
     sf::Clock clock;
 
     // Create field vars
@@ -30,7 +30,7 @@ int main() {
     slider1.setPosition(50, 50);
     
     // Create a the circles
-    int numb_of_points = 50;
+    int numb_of_points = 1000;
     Point_Cloud points(numb_of_points, {w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, &window);
 
     while (window.isOpen()) {
@@ -106,7 +106,7 @@ int main() {
         window.draw(field);
 
         // Draw circles
-        points.Draw({w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, deltaTimeSeconds);
+        points.SimulateStep({w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, deltaTimeSeconds);
 
         // Scrollbar 
         window.draw(scrollbar1);
