@@ -22,7 +22,6 @@ int main() {
 
     // Scrollbar to change the field sizes
     int value = 0;
-    // Scrollbar 1
     sf::RectangleShape scrollbar1(sf::Vector2f(17, 100));
     scrollbar1.setFillColor(sf::Color(100, 100, 100));
     scrollbar1.setPosition(50, 50);
@@ -31,7 +30,8 @@ int main() {
     slider1.setPosition(50, 50);
     
     // Create a the circles
-    Point_Cloud points(1, {w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, &window);
+    int numb_of_points = 50;
+    Point_Cloud points(numb_of_points, {w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, &window);
 
     while (window.isOpen()) {
         sf::Event event;

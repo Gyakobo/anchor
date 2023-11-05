@@ -12,7 +12,7 @@ public:
     sf::Vector2f getPos();
 
 private:
-    float gravity = 24.6f;
+    float gravity = 28.6f;
     sf::Vector2f position;
     sf::Vector2f velocity;
     int size;
