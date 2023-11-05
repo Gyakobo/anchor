@@ -22,9 +22,9 @@ public:
 private:
     // Gravity
     int size = 5; 
-    float gravity           = 1.4f;
+    float gravity           = 7.2f;
     float mass              = 1.6f;
-    float collisionDamping  = 0.6f;
+    float collisionDamping  = 0.1f;
 
     // Pressure
     int numb_of_points;

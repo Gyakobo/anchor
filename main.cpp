@@ -30,8 +30,20 @@ int main() {
     slider1.setPosition(50, 50);
     
     // Create a the circles
-    int numb_of_points = 1000;
+    int numb_of_points = 200;
     Point_Cloud points(numb_of_points, {w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, &window);
+
+    // Create a Matrix
+    Sparse_Matrix sprs_mtrx; 
+    struct Matrix mtrx = sprs_mtrx.mtrx_alloc("file.txt", 0); 
+    sprs_mtrx.mtrx_print(&mtrx);
+    std::vector<sf::Vector2f> outline_points = sprs_mtrx.getOutlinePoints(&mtrx);
+
+    int i;
+    for (i=0; i<outline_points.size(); ++i) printf("x: %f, y: %f\n", outline_points[i].x, outline_points[i].y);
+
+    // Draw the ship
+    Ship ship(outline_points, &window);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -111,6 +123,9 @@ int main() {
         // Scrollbar 
         window.draw(scrollbar1);
         window.draw(slider1);
+
+        // Draw Ship
+        ship.Draw(w/2 - field.getSize().x/2, l/2 - field.getSize().y/2, value);
 
         // Display the content
         window.display();

@@ -3,5 +3,6 @@
 #include <stdio.h>
 
 #include <SFML/Graphics.hpp>
-#include "Point.h"
 #include "point_cloud.h"
+#include "sparse_matrix.h"
+#include "ship.h"
