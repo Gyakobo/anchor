@@ -10,3 +10,7 @@ Author: [Andrew Gyakobo](https://github.com/Gyakobo)
 This project was made during NJIT 2023's hackathon.
 
 ## Introduction
+
+
+## License
+MIT
