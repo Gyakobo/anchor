@@ -17,20 +17,20 @@ class Point_Cloud {
 public:
     Point_Cloud(int numb_of_points, sf::Vector2f b1, sf::Vector2f b2, sf::RenderWindow *window);
     ~Point_Cloud();
-    void SimulateStep(sf::Vector2f b1, sf::Vector2f b2, float deltaTime);
+    void SimulateStep(std::vector<sf::Vector2f> polygon, sf::Vector2f b1, sf::Vector2f b2, float deltaTime);
 
 private:
     // Gravity
     int size = 5; 
-    float gravity           = 7.2f;
+    float gravity           = 1.2f;
     float mass              = 1.6f;
-    float collisionDamping  = 0.1f;
+    float collisionDamping  = 0.8f;
 
     // Pressure
     int numb_of_points;
     float smoothingRadius = 45.35f; // 45.35f
     float targetDensity = 1.2f;
-    float pressureMultiplier = -600.44f;
+    float pressureMultiplier = -600.f; // -600
     
     // Arrays 
     float *densities;

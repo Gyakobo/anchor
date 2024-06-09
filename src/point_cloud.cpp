@@ -4,6 +4,42 @@ float magnitude (sf::Vector2f v1, sf::Vector2f v2) {
     return sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
 }
 
+// Function to calculate the distance between two sf::Vector2f points
+float distance(const sf::Vector2f& p1, const sf::Vector2f& p2) {
+    return std::sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+}
+
+// Function to find the nearest point on the polygon boundary using sf::Vector2f
+sf::Vector2f findNearestPoint(const sf::Vector2f& outsidePoint, const std::vector<sf::Vector2f>& polygon) {
+    sf::Vector2f nearestPoint = polygon[0];
+    float minDistance = distance(outsidePoint, nearestPoint);
+
+    for (size_t i = 1; i < polygon.size(); ++i) {
+        float currentDistance = distance(outsidePoint, polygon[i]);
+        if (currentDistance < minDistance) {
+            minDistance = currentDistance;
+            nearestPoint = polygon[i];
+        }
+    }
+
+    return nearestPoint;
+}
+
+bool isInsidePolygon(const sf::Vector2f point, const std::vector<sf::Vector2f> polygon) {
+    int crossings = 0;
+
+    for (size_t i = 0, j = polygon.size() - 1; i < polygon.size(); j = i++) {
+        if (((polygon[i].y > point.y) != (polygon[j].y > point.y)) &&
+            (point.x < (polygon[j].x - polygon[i].x) * (point.y - polygon[i].y) /
+                            (polygon[j].y - polygon[i].y) + polygon[i].x)) {
+            crossings++;
+        }
+    }
+
+    return (crossings % 2 != 0);
+}
+
+
 Point_Cloud::Point_Cloud(int numb_of_points, sf::Vector2f b1, sf::Vector2f b2, sf::RenderWindow *window) {
     std::srand((unsigned) time(NULL));
     this->numb_of_points = numb_of_points;
@@ -107,7 +143,7 @@ sf::Vector2f Point_Cloud::CalculatePressureForce(int particleIndex) {
     return pressureForce;
 }
 
-void Point_Cloud::SimulateStep(sf::Vector2f b1, sf::Vector2f b2, float deltaTime) {
+void Point_Cloud::SimulateStep(std::vector<sf::Vector2f> polygon, sf::Vector2f b1, sf::Vector2f b2, float deltaTime) {
     // Apply gravity and calculate densities
     #pragma omp parallel
     {
@@ -117,23 +153,10 @@ void Point_Cloud::SimulateStep(sf::Vector2f b1, sf::Vector2f b2, float deltaTime
 
         for (i=id; i<numb_of_points; i+=n) {
             velocities[i] += (sf::Vector2f(0, 1) * gravity * deltaTime);
-            // predictedPositions[i] = positions[i] + velocities[i] * deltaTime;
             densities[i] = CalculateDensity(positions[i]);
         }
     }
     
-    // delete me
-    /*#pragma omp parallel
-    {
-        int id = omp_get_thread_num();  // Get thread number
-        int n = omp_get_num_threads();   // Get number of threads
-        int i;
-        
-        for (i=id; i<numb_of_points; i+=n) {
-            densities[i] = CalculateDensity(predictedPositions[i]);
-        }
-    }*/
-
 
     // Caculate and apply pressure forces
     #pragma omp parallel
@@ -177,6 +200,13 @@ void Point_Cloud::SimulateStep(sf::Vector2f b1, sf::Vector2f b2, float deltaTime
                 velocities[i].y *= -1 * collisionDamping;
                 positions[i].y = b1.y + size*2;
             } 
+
+            /*if (!isInsidePolygon(positions[i], polygon)) {
+                sf::Vector2f nearestPoint = findNearestPoint(positions[i], polygon);
+                nearestPoint /= sqrt(nearestPoint.x * nearestPoint.x + nearestPoint.y * nearestPoint.y);
+                // positions[i] = nearestPoint;
+                velocities[i] += -1.f * nearestPoint * 150.f;
+            }*/
         }
     }
     

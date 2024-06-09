@@ -2,12 +2,13 @@
 
 using namespace std;
 
+
 int main() {
     // Create a window
     const int w = 1280, l = 720; 
     sf::RenderWindow window(sf::VideoMode(w, l), "Anchor", sf::Style::Titlebar | sf::Style::Close, sf::ContextSettings(0, 0, 8));
     window.clear(sf::Color::Black);
-    window.setFramerateLimit(120);
+    window.setFramerateLimit(60);
     sf::Clock clock;
 
     // Create field vars
@@ -30,7 +31,7 @@ int main() {
     slider1.setPosition(50, 50);
     
     // Create a the circles
-    int numb_of_points = 200;
+    int numb_of_points = 100;
     Point_Cloud points(numb_of_points, {w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, &window);
 
     // Create a Matrix
@@ -44,6 +45,7 @@ int main() {
 
     // Draw the ship
     Ship ship(outline_points, &window);
+    ship.enlarge(54.f);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -72,6 +74,7 @@ int main() {
 
                                     // Update the value based on the slider position
                                     value = (100.f * (posY - 50) / 100.f);
+                                    //ship.enlarge(30.f);
 
                                     x = min(float(w), field_w + 1189.f * (value / 100.f));
                                     y = min(float(l), field_l + 706.f * (value / 100.f));
@@ -87,6 +90,7 @@ int main() {
                             window.draw(scrollbar1);
                             window.draw(slider1);
                             window.draw(field);
+                            // ship.Draw(w/2, l/2);
                             window.display();
                         }
                     }
@@ -116,16 +120,16 @@ int main() {
 
         // Field 
         window.draw(field);
+        
+        // Draw Ship
+        // ship.Draw(w/2, l/2);
 
         // Draw circles
-        points.SimulateStep({w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, deltaTimeSeconds);
+        points.SimulateStep(ship.getPoints(), {w/2 - field.getSize().x/2, l/2 - field.getSize().y/2}, {w/2 + field.getSize().x/2, l/2 + field.getSize().y/2}, deltaTimeSeconds);
 
         // Scrollbar 
         window.draw(scrollbar1);
         window.draw(slider1);
-
-        // Draw Ship
-        ship.Draw(w/2 - field.getSize().x/2, l/2 - field.getSize().y/2, value);
 
         // Display the content
         window.display();
